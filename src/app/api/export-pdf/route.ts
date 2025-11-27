@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     const pdfBuffer = await generatePDF(policy)
     const filename = `${policy.title.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
 
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(new Uint8Array(pdfBuffer), {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',

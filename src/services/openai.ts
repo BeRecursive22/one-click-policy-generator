@@ -1,7 +1,9 @@
 import { AzureOpenAI } from 'openai'
 import type { ChatCompletionTool } from 'openai/resources/chat/completions'
-import { Message, PolicyDocument, PolicyType, CompanyContext } from '@/types'
-import { SYSTEM_PROMPT, getPolicyPrompt, POLICY_TYPE_LABELS, COMPLIANCE_STANDARDS } from '@/lib/prompts'
+import { Message, PolicyDocument, PolicyType, CompanyContext, COMPLIANCE_STANDARDS } from '@/types'
+import { getPolicyPrompt } from '@/lib/prompts'
+import { SYSTEM_PROMPT } from '@/lib/prompts/base'
+import { POLICY_TYPE_LABELS } from '@/types'
 import { generateId } from '@/lib/utils'
 
 // Azure OpenAI configuration
@@ -73,7 +75,7 @@ export async function chat(
   if (responseMessage?.tool_calls && responseMessage.tool_calls.length > 0) {
     const toolCall = responseMessage.tool_calls[0]
 
-    if (toolCall.function.name === 'generate_policy') {
+    if (toolCall.type === 'function' && toolCall.function.name === 'generate_policy') {
       try {
         const args = JSON.parse(toolCall.function.arguments)
         const policyType = args.policy_type as PolicyType

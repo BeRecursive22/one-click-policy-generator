@@ -73,7 +73,7 @@ export default function PolicyPreview({ policy }: PolicyPreviewProps) {
           </Button>
         </div>
         <div className="flex flex-wrap gap-2 mt-3">
-          {policy.metadata.standards.map((standard) => (
+          {policy.metadata.standards?.map((standard) => (
             <span key={standard} className="px-2 py-1 text-xs rounded-full bg-primary/10 text-primary">
               {standard}
             </span>

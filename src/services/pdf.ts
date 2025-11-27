@@ -28,7 +28,7 @@ function PolicyPDF({ policy }: { policy: PolicyDocument }) {
           createElement(Text, {}, `Effective Date: ${policy.metadata.effectiveDate}`)
         ),
         createElement(View, { style: styles.standards },
-          ...policy.metadata.standards.map((standard, i) =>
+          ...policy.metadata.standards!.map((standard, i) =>
             createElement(Text, { key: i, style: styles.standardBadge }, standard)
           )
         )
@@ -51,7 +51,7 @@ function PolicyPDF({ policy }: { policy: PolicyDocument }) {
 }
 
 export async function generatePDF(policy: PolicyDocument): Promise<Buffer> {
-  const element = createElement(PolicyPDF, { policy })
+  const element = PolicyPDF({ policy })
   const buffer = await renderToBuffer(element)
   return Buffer.from(buffer)
 }
