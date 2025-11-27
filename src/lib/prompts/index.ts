@@ -106,11 +106,12 @@ Explicitly state alignment intent with ISO 27001 / SOC 2 where appropriate, but 
 Requirements:
 - Use clear, plain language appropriate for employees and stakeholders.
 - Adapt details to the company profile (remote vs office, BYOD, regions, compliance targets).
-- Output MUST be valid JSON of the form:
-{
-  "title": "Policy Title",
-  "sections": [
-    { "id": "section_id", "title": "Section Title", "content": "Full section content..." }
-  ]
-}`
+- Output MUST be clean, professional Markdown format:
+  - Start with a single # heading for the policy title
+  - Use ## for major sections
+  - Use ### for subsections
+  - Use bullet points and numbered lists where appropriate
+  - Use **bold** for key terms and emphasis
+  - Include a Table of Contents after the title with links to sections
+  - Do NOT output JSON - output readable Markdown only`
 }

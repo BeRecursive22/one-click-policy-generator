@@ -1,18 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { generatePDF } from '@/services/pdf'
-import { PolicyDocument } from '@/types'
+import { generatePDFFromMarkdown } from '@/services/pdf'
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { policy } = body as { policy: PolicyDocument }
+    const { markdown } = body as { markdown: string }
 
-    if (!policy || !policy.title || !policy.sections) {
-      return NextResponse.json({ error: 'Valid policy document is required' }, { status: 400 })
+    if (!markdown || typeof markdown !== 'string') {
+      return NextResponse.json({ error: 'Markdown content is required' }, { status: 400 })
     }
 
-    const pdfBuffer = await generatePDF(policy)
-    const filename = `${policy.title.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
+    const pdfBuffer = await generatePDFFromMarkdown(markdown)
+
+    // Extract title from markdown for filename
+    const titleMatch = markdown.match(/^#\s+(.+)/m)
+    const title = titleMatch ? titleMatch[1] : 'Policy'
+    const filename = `${title.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`
 
     return new NextResponse(new Uint8Array(pdfBuffer), {
       status: 200,

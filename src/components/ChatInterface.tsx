@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Send, Loader2 } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { cn, generateId } from '@/lib/utils'
@@ -9,6 +10,7 @@ import { Message, PolicyDocument } from '@/types'
 
 interface ChatInterfaceProps {
   onPolicyGenerated?: (policy: PolicyDocument) => void
+  onPolicyContentGenerated?: (content: string) => void
 }
 
 const WELCOME_MESSAGE: Message = {
@@ -29,7 +31,7 @@ What policy would you like to create today?`,
   timestamp: new Date(),
 }
 
-export default function ChatInterface({ onPolicyGenerated }: ChatInterfaceProps) {
+export default function ChatInterface({ onPolicyGenerated, onPolicyContentGenerated }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -80,6 +82,12 @@ export default function ChatInterface({ onPolicyGenerated }: ChatInterfaceProps)
 
       setMessages((prev) => [...prev, assistantMessage])
 
+      // Handle policy content (new markdown-based approach)
+      if (data.policyContent && onPolicyContentGenerated) {
+        onPolicyContentGenerated(data.policyContent)
+      }
+
+      // Handle structured policy document (legacy)
       if (data.policy && onPolicyGenerated) {
         onPolicyGenerated(data.policy)
       }
@@ -118,7 +126,13 @@ export default function ChatInterface({ onPolicyGenerated }: ChatInterfaceProps)
                     : 'bg-muted'
                 )}
               >
-                <p className="whitespace-pre-wrap text-sm">{message.content}</p>
+                {message.role === 'user' ? (
+                  <p className="whitespace-pre-wrap text-sm">{message.content}</p>
+                ) : (
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                  </div>
+                )}
               </div>
             </div>
           ))}

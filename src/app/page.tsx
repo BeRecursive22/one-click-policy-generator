@@ -3,11 +3,10 @@
 import { useState } from 'react'
 import { FileText } from 'lucide-react'
 import ChatInterface from '@/components/ChatInterface'
-import PolicyPreview from '@/components/PolicyPreview'
-import { PolicyDocument } from '@/types'
+import PolicyCanvas from '@/components/PolicyCanvas'
 
 export default function Home() {
-  const [generatedPolicy, setGeneratedPolicy] = useState<PolicyDocument | null>(null)
+  const [policyContent, setPolicyContent] = useState<string | null>(null)
 
   return (
     <div className="flex flex-col h-screen bg-background">
@@ -29,14 +28,17 @@ export default function Home() {
       {/* Main Content */}
       <main className="flex-1 flex overflow-hidden">
         {/* Chat Panel */}
-        <div className={`${generatedPolicy ? 'w-1/2 border-r' : 'w-full'} flex flex-col transition-all`}>
-          <ChatInterface onPolicyGenerated={setGeneratedPolicy} />
+        <div className={`${policyContent ? 'w-1/2 border-r' : 'w-full'} flex flex-col transition-all`}>
+          <ChatInterface onPolicyContentGenerated={setPolicyContent} />
         </div>
 
-        {/* Policy Preview Panel */}
-        {generatedPolicy && (
+        {/* Policy Canvas Panel */}
+        {policyContent && (
           <div className="w-1/2 p-4 overflow-hidden">
-            <PolicyPreview policy={generatedPolicy} />
+            <PolicyCanvas
+              content={policyContent}
+              onClose={() => setPolicyContent(null)}
+            />
           </div>
         )}
       </main>
